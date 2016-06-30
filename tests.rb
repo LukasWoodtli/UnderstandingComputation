@@ -42,6 +42,6 @@ end
 
 class TestReduce < Test::Unit::TestCase
   def test_reduce1
-    assert_equal("<<2 + 3 * 4>>", expression.reduce) 
+    assert_equal("<<2 + 3 * 4>>", expression.reduce.inspect) 
   end
 end
