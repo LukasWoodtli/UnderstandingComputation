@@ -28,20 +28,18 @@ end
 
 ###############################################
 
-expression = Add.new(
-                 Multiply.new(Number.new(1), Number.new(2)),
-                 Multiply.new(Number.new(3), Number.new(4))
-             )
-
-expect true do
-  expression.reducible?
-end
 
 
 
 
 class TestReduce < Test::Unit::TestCase
   def test_reduce1
+    expression = Add.new(
+                 Multiply.new(Number.new(1), Number.new(2)),
+                 Multiply.new(Number.new(3), Number.new(4))
+             )
+             
+    assert(expression.reducible?)
     assert_equal("<<2 + 3 * 4>>", expression.reduce.inspect) 
   end
 end
