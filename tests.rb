@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 require_relative "app.rb"
+require "test/unit" 
+
 
 def expect value
   ret = yield
@@ -33,4 +35,13 @@ expression = Add.new(
 
 expect true do
   expression.reducible?
+end
+
+
+
+
+class TestReduce < Test::Unit::TestCase
+  def test_reduce1
+    assert_equal("<<2 + 3 * 4>>", expression.reduce) 
+  end
 end
