@@ -29,8 +29,8 @@ end
 ###############################################
 
 expression = Add.new(
-                 Muliply.new(Number.new(1), Number.new(2)),
-                 Muliply.new(Number.new(3), Number.new(4))
+                 Multiply.new(Number.new(1), Number.new(2)),
+                 Multiply.new(Number.new(3), Number.new(4))
              )
 
 expect true do
