@@ -23,3 +23,14 @@ expect true do
   Add.new(Number.new(1), Number.new(2)).reducible?
 end
 
+
+###############################################
+
+expression = Add.new(
+                 Muliply.new(Number.new(1), Number.new(2)),
+                 Muliply.new(Number.new(3), Number.new(4))
+             )
+
+expect true do
+  expression.reducible?
+end
