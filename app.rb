@@ -37,7 +37,7 @@ class Add < Struct.new(:left, :right)
     elsif right.reducible?
       Add.new(left, right.reduce)
     else
-      Number.new(left + right)
+      Number.new(left.value + right.value)
     end
   end
 end
@@ -61,7 +61,7 @@ class Multiply < Struct.new(:left, :right)
     elsif right.reducible?
       Multiply.new(left, right.reduce)
     else
-      Number(left * right)
+      Number.new(left.value * right.value)
     end  
   end
   
