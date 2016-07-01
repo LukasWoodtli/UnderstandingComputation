@@ -2,6 +2,7 @@
 
 require_relative "app.rb"
 require "test/unit" 
+require "stringio"
 
 
 class TestReduce < Test::Unit::TestCase
@@ -35,4 +36,30 @@ class TestReduce < Test::Unit::TestCase
     assert(!expression.reducible?)
 
   end
+end
+
+
+
+
+class TestMachine < Test::Unit::TestCase
+
+  def test_run
+    # redirect stdout to string
+    begin
+      old_stdout = $stdout
+      $stdout = StringIO.new('','w')
+
+      Machine.new(
+        Add.new(
+          Multiply.new(Number.new(1), Number.new(2)),
+          Multiply.new(Number.new(3), Number.new(4))
+        )
+      ).run
+
+      assert_equal("1 * 2 + 3 * 4\n2 + 3 * 4\n2 + 12\n14\n", $stdout.string)
+    ensure
+      $stdout = old_stdout
+    end
+  end
+
 end
