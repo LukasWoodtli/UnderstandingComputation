@@ -86,7 +86,7 @@ class TestMachine < Test::Unit::TestCase
 end
 
 
-class TestReduceLessThan #< Test::Unit::TestCase
+class TestReduceLessThan < Test::Unit::TestCase
   def test_run
     # redirect stdout to string
     begin

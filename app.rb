@@ -100,7 +100,7 @@ class LessThan < Struct.new(:left, :right)
     if left.reducible?
       LessThan.new(left.reduce, right)
     elsif right.reducible?
-      LessThan.new(left, right.reduce?)
+      LessThan.new(left, right.reduce)
     else
       Boolean.new(left.value < right.value)
     end
