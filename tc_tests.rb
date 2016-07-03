@@ -64,7 +64,29 @@ class TestMachine < Test::Unit::TestCase
 
 end
 
-class TestReduceLessThan < Test::Unit::TestCase
+
+class TestMachine < Test::Unit::TestCase
+
+  def test_run
+    # redirect stdout to string
+    begin
+      old_stdout = $stdout
+      $stdout = StringIO.new('','w')
+
+      Machine.new(
+        Add.new(Number.new(2), Number.new(2))
+      ).run
+
+      assert_equal("2 + 2\n4\n", $stdout.string)
+    ensure
+      $stdout = old_stdout
+    end
+  end
+
+end
+
+
+class TestReduceLessThan #< Test::Unit::TestCase
   def test_run
     # redirect stdout to string
     begin
