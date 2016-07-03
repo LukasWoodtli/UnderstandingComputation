@@ -53,7 +53,8 @@ class TestMachine < Test::Unit::TestCase
         Add.new(
           Multiply.new(Number.new(1), Number.new(2)),
           Multiply.new(Number.new(3), Number.new(4))
-        )
+        ),
+        {}
       ).run
 
       assert_equal("1 * 2 + 3 * 4\n2 + 3 * 4\n2 + 12\n14\n", $stdout.string)
@@ -74,7 +75,8 @@ class TestMachine < Test::Unit::TestCase
       $stdout = StringIO.new('','w')
 
       Machine.new(
-        Add.new(Number.new(2), Number.new(2))
+        Add.new(Number.new(2), Number.new(2)),
+        {}
       ).run
 
       assert_equal("2 + 2\n4\n", $stdout.string)
@@ -97,7 +99,8 @@ class TestReduceLessThan < Test::Unit::TestCase
         LessThan.new(
           Number.new(5),
           Add.new(Number.new(2), Number.new(2))
-        )
+        ),
+        {}
       ).run
 
       assert_equal("5 < 2 + 2\n5 < 4\nfalse\n", $stdout.string)

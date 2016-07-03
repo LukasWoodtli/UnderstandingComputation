@@ -126,7 +126,7 @@ class Variable < Struct.new(:name)
 
 end
 
-class Machine < Struct.new(:expression, :environment = {})
+class Machine < Struct.new(:expression, :environment)
   def step
     self.expression = expression.reduce(environment)
   end
