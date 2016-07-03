@@ -21,16 +21,16 @@ class TestReduce < Test::Unit::TestCase
              )
              
     assert(expression.reducible?)
-    expression = expression.reduce
+    expression = expression.reduce({})
     assert_equal("<<2 + 3 * 4>>", expression.inspect)
 
     assert(expression.reducible?)
-    expression = expression.reduce
+    expression = expression.reduce({})
     assert_equal("<<2 + 12>>", expression.inspect)
 
 
     assert(expression.reducible?)
-    expression = expression.reduce
+    expression = expression.reduce({})
     assert_equal("<<14>>", expression.inspect) 
 
     assert(!expression.reducible?)
