@@ -116,7 +116,7 @@ class TestEnvironment < Test::Unit::TestCase
 
       Machine.new(
           Add.new(Variable.new(:x), Variable.new(:y)),
-          {x : Number.new(3), y : Number.new(4)}
+          {x: Number.new(3), y: Number.new(4)}
       ).run
 
       assert_equal("x + y\n3 + y\n3 + 4\n7\n", $stdout.string)
