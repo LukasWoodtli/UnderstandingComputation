@@ -106,3 +106,22 @@ class TestReduceLessThan < Test::Unit::TestCase
     end
   end
 end
+
+class TestEnvironment < Test::Unit::TestCase
+  def test_run
+    # redirect stdout to string
+    begin
+      old_stdout = $stdout
+      $stdout = StringIO.new('','w')
+
+      Machine.new(
+          Add.new(Variable.new(:x), Variable.new(:y)),
+          {x : Number.new(3), y : Number.new(4)}
+      ).run
+
+      assert_equal("x + y\n3 + y\n3 + 4\n7\n", $stdout.string)
+    ensure
+      $stdout = old_stdout
+    end
+  end
+end
