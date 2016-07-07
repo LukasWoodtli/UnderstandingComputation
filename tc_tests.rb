@@ -41,7 +41,7 @@ end
 
 
 
-class TestMachine < Test::Unit::TestCase
+class TestMachineOldOld < Test::Unit::TestCase
 
   def test_run
     # redirect stdout to string
@@ -49,7 +49,7 @@ class TestMachine < Test::Unit::TestCase
       old_stdout = $stdout
       $stdout = StringIO.new('','w')
 
-      Machine.new(
+      MachineOld.new(
         Add.new(
           Multiply.new(Number.new(1), Number.new(2)),
           Multiply.new(Number.new(3), Number.new(4))
@@ -66,7 +66,7 @@ class TestMachine < Test::Unit::TestCase
 end
 
 
-class TestMachine < Test::Unit::TestCase
+class TestMachineOld < Test::Unit::TestCase
 
   def test_run
     # redirect stdout to string
@@ -74,7 +74,7 @@ class TestMachine < Test::Unit::TestCase
       old_stdout = $stdout
       $stdout = StringIO.new('','w')
 
-      Machine.new(
+      MachineOld.new(
         Add.new(Number.new(2), Number.new(2)),
         {}
       ).run
@@ -95,7 +95,7 @@ class TestReduceLessThan < Test::Unit::TestCase
       old_stdout = $stdout
       $stdout = StringIO.new('','w')
 
-      Machine.new(
+      MachineOld.new(
         LessThan.new(
           Number.new(5),
           Add.new(Number.new(2), Number.new(2))
@@ -117,7 +117,7 @@ class TestEnvironment < Test::Unit::TestCase
       old_stdout = $stdout
       $stdout = StringIO.new('','w')
 
-      Machine.new(
+      MachineOld.new(
           Add.new(Variable.new(:x), Variable.new(:y)),
           {x: Number.new(3), y: Number.new(4)}
       ).run
@@ -126,5 +126,50 @@ class TestEnvironment < Test::Unit::TestCase
     ensure
       $stdout = old_stdout
     end
+  end
+end
+
+class TestAssignment < Test::Unit::TestCase
+  def test_assign
+    statement = Assign.new(:x, Add.new(Variable.new(:x), Number.new(1)))
+    environment = {x: Number.new(2)}
+
+    assert(statement.reducible?)
+
+    statement, environment = statement.reduce(environment)
+    assert_equal("<<x = 2 + 1>>", statement.inspect)
+    assert_equal("{:x=><<2>>}", environment.inspect)
+
+    statement, environment = statement.reduce(environment)
+    assert_equal("<<x = 3>>", statement.inspect)
+    assert_equal("{:x=><<2>>}", environment.inspect)
+
+    statement, environment = statement.reduce(environment)
+    assert_equal("<<do_nothing>>", statement.inspect)
+    assert_equal("{:x=><<3>>}", environment.inspect)
+
+    assert(!statement.reducible?)
+
+
+  end
+
+end
+
+
+class TestAssignInMachine < Test::Unit::TestCase
+  def test_assign
+      # redirect stdout to string
+      begin
+        old_stdout = $stdout
+        $stdout = StringIO.new('','w')
+
+        Machine.new(Assign.new(:x, Add.new(Variable.new(:x), Number.new(1))),
+                    {x: Number.new(2)}
+        ).run
+
+        assert_equal("x = x + 1, {:x=><<2>>}\nx = 2 + 1, {:x=><<2>>}\nx = 3, {:x=><<2>>}\ndo_nothing, {:x=><<3>>}\n", $stdout.string)
+      ensure
+        $stdout = old_stdout
+      end
   end
 end
