@@ -173,3 +173,26 @@ class TestAssignInMachine < Test::Unit::TestCase
       end
   end
 end
+
+class TestIfInMachine < Test::Unit::TestCase
+  def test_if
+    begin
+        old_stdout = $stdout
+        $stdout = StringIO.new('','w')
+
+        Machine.new(
+          If.new(
+          Variable.new(:x),
+          Assign.new(:y, Number.new(1)),
+          Assign.new(:y, Number.new(2))
+        ),
+          { x: Boolean.new(true) }
+        ).run
+
+       
+        assert_equal("if (x) { y = 1 } else { y = 2 }, {:x=><<true>>}\nif (true) { y = 1 } else { y = 2 }, {:x=><<true>>}\ny = 1, {:x=><<true>>}\ndo_nothing, {:x=><<true>>, :y=><<1>>}\n", $stdout.string)
+      ensure
+        $stdout = old_stdout
+      end
+  end
+end
