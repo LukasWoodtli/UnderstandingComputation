@@ -217,3 +217,27 @@ class TestIfInMachine < Test::Unit::TestCase
       end
   end
 end
+
+
+
+class TestAssignInMachine < Test::Unit::TestCase
+  def test_assign
+      # redirect stdout to string
+      begin
+        old_stdout = $stdout
+        $stdout = StringIO.new('','w')
+
+        Machine.new(
+          Sequence.new(
+            Assign.new(:x, Add.new(Number.new(1), Number.new(1))),
+            Assign.new(:y, Add.new(Variable.new(:x), Number.new(3)))
+          ), {}
+        ).run
+
+        assert_equal("x = 1 + 1; y = x + 3, {}\nx = 2; y = x + 3, {}\ndo_nothing; y = x + 3, {:x=><<2>>}\ny = x + 3, {:x=><<2>>}\ny = 2 + 3, {:x=><<2>>}\ny = 5, {:x=><<2>>}\ndo_nothing, {:x=><<2>>, :y=><<5>>}\n", $stdout.string)
+      ensure
+        $stdout = old_stdout
+      end
+  end
+end
+
