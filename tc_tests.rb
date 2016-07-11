@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding: utf-8
 
 require_relative "app.rb"
 require "test/unit" 
@@ -220,8 +221,8 @@ end
 
 
 
-class TestAssignInMachine < Test::Unit::TestCase
-  def test_assign
+class TestSequenceInMachine < Test::Unit::TestCase
+  def test_sequence
       # redirect stdout to string
       begin
         old_stdout = $stdout
@@ -241,3 +242,24 @@ class TestAssignInMachine < Test::Unit::TestCase
   end
 end
 
+
+class TestWhileInMachine < Test::Unit::TestCase
+  def test_while
+      # redirect stdout to string
+      begin
+        old_stdout = $stdout
+        $stdout = StringIO.new('','w')
+
+        Machine.new(
+          While.new(
+            LessThan.new(Variable.new(:x), Number.new(5)),
+            Assign.new(:x, Multiply.new(Variable.new(:x), Number.new(3)))
+          ), { x: Number.new(1) }
+        ).run
+
+        assert_equal("while (x < 5) { x = x * 3 }, {:x=><<1>>}\nif (x < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<1>>}\nif (1 < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<1>>}\nif (true) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<1>>}\nx = x * 3; while (x < 5) { x = x * 3 }, {:x=><<1>>}\nx = 1 * 3; while (x < 5) { x = x * 3 }, {:x=><<1>>}\nx = 3; while (x < 5) { x = x * 3 }, {:x=><<1>>}\ndo_nothing; while (x < 5) { x = x * 3 }, {:x=><<3>>}\nwhile (x < 5) { x = x * 3 }, {:x=><<3>>}\nif (x < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<3>>}\nif (3 < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<3>>}\nif (true) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<3>>}\nx = x * 3; while (x < 5) { x = x * 3 }, {:x=><<3>>}\nx = 3 * 3; while (x < 5) { x = x * 3 }, {:x=><<3>>}\nx = 9; while (x < 5) { x = x * 3 }, {:x=><<3>>}\ndo_nothing; while (x < 5) { x = x * 3 }, {:x=><<9>>}\nwhile (x < 5) { x = x * 3 }, {:x=><<9>>}\nif (x < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<9>>}\nif (9 < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<9>>}\nif (false) { x = x * 3; while (x < 5) { x = x * 3 } } else { do_nothing }, {:x=><<9>>}\ndo_nothing, {:x=><<9>>}\n", $stdout.string)
+      ensure
+        $stdout = old_stdout
+      end
+  end
+end
