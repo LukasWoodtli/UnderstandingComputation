@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require_relative "app.rb"
+require_relative "simple_small_step.rb"
 require "test/unit" 
 require "stringio"
 
