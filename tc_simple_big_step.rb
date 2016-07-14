@@ -53,3 +53,5 @@ class TestWhile < Test::Unit::TestCase
     statement = While.new(LessThan.new(Variable.new(:x), Number.new(5)),
                           Assign.new(:x, Multiply.new(Variable.new(:x), Number.new(5))))
     expect_std_out("{:x=><<9>>}", statement.evaluate({x: Number.new(1)}))
+  end
+end
