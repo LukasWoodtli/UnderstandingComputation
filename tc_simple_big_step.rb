@@ -36,3 +36,20 @@ class TestEvaluate < Test::Unit::TestCase
                                ).evaluate({x: Number.new(2), y: Number.new(5) }))
   end
 end
+
+class TestSequence < Test::Unit::TestCase
+  def test_eval
+    statement = Sequence.new(
+                 Assign.new(:x,
+                   Add.new(Number.new(1), Number.new(1))),
+                 Assign.new(:y, Add.new(Variable.new(:x), Number.new(3)))
+               )
+    expect_std_out("{:x=><<2>>, :y=><<5>>}", statement.evaluate({}))
+  end
+end
+
+class TestWhile < Test::Unit::TestCase
+  def test_eval
+    statement = While.new(LessThan.new(Variable.new(:x), Number.new(5)),
+                          Assign.new(:x, Multiply.new(Variable.new(:x), Number.new(5))))
+    expect_std_out("{:x=><<9>>}", statement.evaluate({x: Number.new(1)}))
