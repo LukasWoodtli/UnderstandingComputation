@@ -54,5 +54,21 @@ class TestToRuby < Test::Unit::TestCase
     assert_equal(false, proc.call(environment))
     
   end
-               
+
+  def test_assign
+    statement = Assign.new(:y, Add.new(Variable.new(:x), Number.new(1)))
+    assert_equal("-> e { e.merge({ :y => (-> e { (-> e { e[:x] }).call(e) + (-> e { 1 }).call(e) }).call(e) }) }", 
+                 statement.to_ruby)
+  end
+     
+  def test_while
+    statement = While.new(LessThan.new(Variable.new(:x), Number.new(5)),
+                          Assign.new(:x, Multiply.new(Variable.new(:x),
+                                                      Number.new(3))))
+    assert_equal("-> e { while (-> e { (-> e { e[:x] }).call(e) < (-> e { 5 }).call(e) }).call(e); e = (-> e { e.merge({ :x => (-> e { (-> e { e[:x] }).call(e) * (-> e { 3 }).call(e) }).call(e) }) }).call(e); end; e }",
+                statement.to_ruby)
+
+    proc = eval(statement.to_ruby)
+    assert_equal({x: 9}, proc.call({x: 1}))
+  end
 end
