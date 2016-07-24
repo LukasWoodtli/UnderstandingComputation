@@ -7,7 +7,7 @@ task :test do
   Find.find(this_dir) do |path|
     if path.end_with? ".rb"
       if File.basename(path).start_with?("tc_")
-        ruby path
+        ruby "'#{path}'"
       end
     end
   end
