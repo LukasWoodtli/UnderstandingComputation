@@ -1,8 +1,14 @@
+require 'find'
+
 task default: [:test]
 
 task :test do
-  ruby "tc_simple_small_step.rb"
-  ruby "tc_simple_big_step.rb"
-  ruby "tc_simple_denotational.rb"
-  ruby "tc_simple_parser.rb"
+  this_dir = File.expand_path(File.dirname(__FILE__))
+  Find.find(this_dir) do |path|
+    if path.end_with? ".rb"
+      if File.basename(path).start_with?("tc_")
+        ruby path
+      end
+    end
+  end
 end
