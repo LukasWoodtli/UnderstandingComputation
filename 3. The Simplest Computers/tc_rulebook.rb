@@ -19,4 +19,33 @@ class TestRulebook < Test::Unit::TestCase
   	assert(DFA.new(1, [1,3], @rulebook).accepting?)
   	assert(!DFA.new(1, [3], @rulebook).accepting?)
   end
+
+  def test_DFA_chars
+    dfa = DFA.new(1, [3], @rulebook)
+    assert(!dfa.accepting?)
+    
+    dfa.read_character('b')
+    assert(!dfa.accepting?)
+
+    3.times do dfa.read_character('a') end
+    assert(!dfa.accepting?)
+
+    dfa.read_character('b')
+    assert(dfa.accepting?)
+  end
+
+  def test_DFA_string
+    dfa = DFA.new(1, [3], @rulebook)
+    assert(!dfa.accepting?)
+
+    dfa.read_string('baaab')
+    assert(dfa.accepting?)
+  end
+
+  def test_DFADesign
+    dfa_design = DFADesign.new(1, [3], @rulebook)
+    assert(!dfa_design.accepts?('a'))
+    assert(!dfa_design.accepts?('baa'))
+    assert(dfa_design.accepts?('baba'))
+  end
 end
