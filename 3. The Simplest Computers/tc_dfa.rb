@@ -1,5 +1,5 @@
 require "test/unit" 
-require_relative 'rulebook.rb'
+require_relative 'dfa.rb'
 
 class TestRulebook < Test::Unit::TestCase
   def setup

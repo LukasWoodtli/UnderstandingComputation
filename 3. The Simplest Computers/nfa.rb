@@ -1,6 +1,6 @@
 require 'set'
 
-require_relative 'rulebook.rb'
+require_relative 'dfa.rb'
 
 class NFARulebook < Struct.new(:rules)
   def next_states(states, character)
