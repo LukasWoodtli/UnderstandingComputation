@@ -53,3 +53,33 @@ class TestRulebook < Test::Unit::TestCase
   end
 end
 
+class TestFreeMovesRulebook < Test::Unit::TestCase
+  def setup
+    @rulebook = NFARulebook.new([FARule.new(1, nil, 2), FARule.new(1, nil, 4),
+                                FARule.new(2, 'a', 3), FARule.new(3, 'a', 2),
+                                FARule.new(4, 'a', 5), FARule.new(5, 'a', 6),
+                                FARule.new(6, 'a', 4)])
+  end
+
+  def test_free_moves
+    assert_equal(@rulebook.next_states(Set[1], nil), Set[2, 4])
+  end
+
+  def test_follow_free_moves
+    assert_equal(@rulebook.follow_free_moves(Set[1]), Set[1,2,4])
+  end
+
+  def test_nfa_design
+    nfa_design = NFADesign.new(1, [2, 4], @rulebook)
+    
+    assert(nfa_design.accepts?('aa'))
+    
+    assert(nfa_design.accepts?('aaa'))
+   
+    assert(!nfa_design.accepts?('aaaaa'))
+    
+    assert(nfa_design.accepts?('aaaaaa'))
+  end
+end
+
+
