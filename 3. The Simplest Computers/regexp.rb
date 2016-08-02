@@ -69,6 +69,31 @@ class Concatenate < Struct.new(:first, :second)
   def precedence
     1
   end
+
+  def to_nfa_design
+    first_nfa_design = first.to_nfa_design
+    second_nfa_design = second.to_nfa_design
+
+    # The start state of the first NFA
+    start_state = first_nfa_design.start_state
+
+    # The accept states of the second NFA
+    accept_states = second_nfa_design.accept_states
+
+    # All the rules from both NFAs
+    rules = first_nfa_design.rulebook.rules +
+            second_nfa_design.rulebook.rules
+
+    # Some extra free moves to connect each of the first NFA’s
+    # old accept states to the second NFA’s old start state
+    extra_rules = first_nfa_design.accept_states.map { |state|
+                      FARule.new(state, nil, second_nfa_design.start_state)
+                      }
+
+    rulebook = NFARulebook.new(rules + extra_rules)
+
+    NFADesign.new(start_state, accept_states, rulebook)
+  end
 end
 
 
@@ -82,6 +107,32 @@ class Choose < Struct.new(:first, :second)
   def precedence
     0
   end
+
+  def to_nfa_design
+    first_nfa_design = first.to_nfa_design
+    second_nfa_design = second.to_nfa_design
+
+    # A new start state
+    start_state = Object.new
+
+    # All the accept states from both NFAs
+    accept_states = first_nfa_design.accept_states +
+                    second_nfa_design.accept_states
+
+    # All the rules from both NFAs
+    rules = first_nfa_design.rulebook.rules +
+            second_nfa_design.rulebook.rules
+
+    # Two extra free moves to connect the new start state to
+    # each of the NFA’s old start states
+    extra_rules = [first_nfa_design, second_nfa_design].map { |nfa_design|
+                      FARule.new(start_state, nil, nfa_design.start_state)}
+
+    rulebook = NFARulebook.new(rules + extra_rules)
+
+
+    NFADesign.new(start_state, accept_states, rulebook)
+  end
 end
 
 class Repeat < Struct.new(:pattern)
@@ -93,6 +144,31 @@ class Repeat < Struct.new(:pattern)
 
   def precedence
     2
+  end
+
+  def to_nfa_design
+    pattern_nfa_design = pattern.to_nfa_design
+
+    # A new start state, which is also an accept state
+    start_state = Object.new
+
+    # All the accept states from the old NFA
+    accept_states = pattern_nfa_design.accept_states + [start_state]
+
+    # All the rules from the old NFA
+    rules = pattern_nfa_design.rulebook.rules
+
+    # Some extra free moves to connect each of the old
+    # NFA’s accept states to its old start state
+    # Another extra free move to connect the new start state to the old start state
+    extra_rules = pattern_nfa_design.accept_states.map { |accept_state|
+                      FARule.new(accept_state, nil, pattern_nfa_design.start_state)
+                    } +
+                    [FARule.new(start_state, nil, pattern_nfa_design.start_state)]
+
+    rulebook = NFARulebook.new(rules + extra_rules)
+
+    NFADesign.new(start_state, accept_states, rulebook)
   end
 end
 

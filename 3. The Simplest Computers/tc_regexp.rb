@@ -38,4 +38,54 @@ class TestRegexp < Test::Unit::TestCase
     assert(Literal.new('a').matches?('a'))
   end
 
+  def test_concatenate_ab
+    pattern = Concatenate.new(Literal.new('a'), Literal.new('b'))
+
+    assert(!pattern.matches?('a'))
+    assert(pattern.matches?('ab'))
+    assert(!pattern.matches?('abc'))
+  end
+
+  def test_concatenate_abc
+    pattern = Concatenate.new(Literal.new('a'),
+                              Concatenate.new(Literal.new('b'),
+                                              Literal.new('c')))
+
+    assert(!pattern.matches?('a'))
+    assert(!pattern.matches?('ab'))
+    assert(pattern.matches?('abc'))
+  end
+
+  def test_choose
+    pattern = Choose.new(Literal.new('a'), Literal.new('b'))
+
+    assert(pattern.matches?('a'))
+    assert(pattern.matches?('b'))
+    assert(!pattern.matches?('c'))
+  end
+
+  def test_repeat
+    pattern = Repeat.new(Literal.new('a'))
+
+    assert(pattern.matches?(''))
+    assert(pattern.matches?('a'))
+    assert(pattern.matches?('aaaa'))
+    assert(!pattern.matches?('b'))
+  end
+
+  def test_match
+    pattern = Repeat.new(
+                  Concatenate.new(
+                    Literal.new('a'),
+                    Choose.new(Empty.new , Literal.new('b'))))
+
+    assert(pattern.matches?(''))
+    assert(pattern.matches?('a'))
+    assert(pattern.matches?('ab'))
+    assert(pattern.matches?('aba'))
+    assert(pattern.matches?('abab'))
+    assert(pattern.matches?('abaab'))
+    assert(!pattern.matches?('abba'))
+  end
 end
+
