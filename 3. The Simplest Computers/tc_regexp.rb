@@ -1,5 +1,6 @@
 require "test/unit"
 require_relative 'regexp.rb'
+require 'treetop'
 
 class TestRegexp < Test::Unit::TestCase
 
@@ -84,6 +85,21 @@ class TestRegexp < Test::Unit::TestCase
     assert(pattern.matches?('ab'))
     assert(pattern.matches?('aba'))
     assert(pattern.matches?('abab'))
+    assert(pattern.matches?('abaab'))
+    assert(!pattern.matches?('abba'))
+  end
+
+
+  def test_parser
+    this_dir = File.expand_path(File.dirname(__FILE__))
+
+    Treetop.load(File.join(this_dir, 'regexp'))
+
+    parse_tree = PatternParser.new.parse('(a(|b))*')
+    pattern = parse_tree.to_ast
+
+    assert_equal("/(a(|b))*/", pattern.inspect)
+
     assert(pattern.matches?('abaab'))
     assert(!pattern.matches?('abba'))
   end
