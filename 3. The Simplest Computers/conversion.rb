@@ -6,7 +6,7 @@ class NFASimulation < Struct.new(:nfa_design)
   end
   
   def rules_for(state)
-    nfa_design.rulebook.alphabet.map { |charcter| FARule.new(state, character, next_state(state, character))}
+    nfa_design.rulebook.alphabet.map { |character| FARule.new(state, character, next_state(state, character))}
   end
   
   def discover_states_and_rules(state)
