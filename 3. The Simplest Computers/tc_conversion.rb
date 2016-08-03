@@ -43,7 +43,7 @@ class TestConversion < Test::Unit::TestCase
   
   def test_discover_states_and_rules
     start_state = @nfa_design.to_nfa.current_states
-    assert_equal(Set[1, 2], start_states)
+    assert_equal(Set[1, 2], start_state)
   end
 
   def test_rules_for
