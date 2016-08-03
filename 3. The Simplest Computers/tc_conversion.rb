@@ -13,9 +13,9 @@ class TestConversion < Test::Unit::TestCase
     @nfa_design = NFADesign.new(1, [3], @rulebook)
     @simulation = NFASimulation.new(@nfa_design)
   end
-  
+
   def test_to_nfa
-    
+
 
     assert_equal(Set[1, 2], @nfa_design.to_nfa.current_states)
     assert_equal(Set[2], @nfa_design.to_nfa(Set[2]).current_states)
@@ -28,32 +28,57 @@ class TestConversion < Test::Unit::TestCase
   end
 
   def test_simulation
-   
-    
+
+
     assert_equal(Set[1, 2], @simulation.next_state(Set[1, 2], 'a'))
     assert_equal(Set[2, 3], @simulation.next_state(Set[1, 2], 'b'))
     assert_equal(Set[1, 2, 3], @simulation.next_state(Set[2, 3], 'b'))
     assert_equal(Set[1, 2, 3], @simulation.next_state(Set[1, 2, 3], 'b'))
     assert_equal(Set[1, 2], @simulation.next_state(Set[1, 2, 3], 'a'))
   end
-  
+
   def test_alphabet
     assert_equal(["a", "b"], @rulebook.alphabet)
   end
-  
+
   def test_discover_states_and_rules
     start_state = @nfa_design.to_nfa.current_states
     assert_equal(Set[1, 2], start_state)
+
+   # assert_equal([Set[Set[1,2], Set[2,3], Set, Set[1,2,3]],
+   #               [FARule.new(Set[1,2], 'a', Set[1,2]),
+   #                FARule.new(Set[1, 2], 'b', Set[3, 2]),
+   #                FARule.new(Set[3, 2], 'a', Set),
+   #                FARule.new(Set[3, 2], 'b', Set[1, 3, 2]),
+   #                FARule.new(Set, 'a', Set),
+   #                FARule.new(Set, 'b', Set),
+   #                FARule.new(Set[1, 3, 2], 'a', Set[1, 2]),
+   #                FARule.new(Set[1, 3, 2], 'b', Set[1, 3, 2])]],
+   #              @simulation.discover_states_and_rules(Set[start_state]))
+  end
+
+  def test_accepting
+    assert(!@nfa_design.to_nfa(Set[1,2]).accepting?)
+    assert(@nfa_design.to_nfa(Set[2,3]).accepting?)
   end
 
   def test_rules_for
-    assert_equal([FARule.new(Set[1, 2], 'a', Set[1, 2]), 
+    assert_equal([FARule.new(Set[1, 2], 'a', Set[1, 2]),
                   FARule.new(Set[1, 2], 'b', Set[2, 3])],
                  @simulation.rules_for(Set[1, 2]))
 
-    assert_equal([FARule.new(Set[2, 3], 'a', Set[]), 
+    assert_equal([FARule.new(Set[2, 3], 'a', Set[]),
                   FARule.new(Set[2, 3], 'b', Set[1, 2, 3])],
                  @simulation.rules_for(Set[2, 3]))
   end
-    
+
+  def test_to_dfa_design
+    dfa_design = @simulation.to_dfa_design
+
+    assert(!dfa_design.accepts?('aaa'))
+
+    assert(dfa_design.accepts?('aab'))
+
+    assert(dfa_design.accepts?('bbbabb'))
+  end
 end
