@@ -21,3 +21,25 @@ class TestPda < Test::Unit::TestCase
     assert(rule.applies_to?(configuration, '('))
   end
 end
+
+
+class TestDpda < Test::Unit::TestCase
+  def test_rulebook
+    rulebook = DPDARulebook.new([PDARule.new(1, '(', 2, '$', ['b', '$']),
+                                  PDARule.new(2, '(', 2, 'b', ['b', 'b']),
+                                  PDARule.new(2, ')', 2, 'b', []),
+                                  PDARule.new(2, nil, 1, '$', ['$'])])
+
+    configuration = PDAConfiguration.new(1, Stack.new(['$']))
+
+    configuration = rulebook.next_configuration(configuration, '(')
+    assert_equal(PDAConfiguration.new(2, Stack.new(['b', '$'])), configuration)
+
+    configuration = rulebook.next_configuration(configuration, '(')
+    assert_equal(PDAConfiguration.new(2, Stack.new(['b', 'b', '$'])), configuration)
+
+    configuration = rulebook.next_configuration(configuration, ')')
+    assert_equal(PDAConfiguration.new(2, Stack.new(['b', '$'])), configuration)
+  end
+end
+
