@@ -89,5 +89,15 @@ class TestDpda < Test::Unit::TestCase
     assert(dpda_design.accepts?('(((((((((())))))))))'))
     assert(dpda_design.accepts?('()(())((()))(()(()))'))
     assert(!dpda_design.accepts?('(()(()(()()(()()))()'))
+    assert(!dpda_design.accepts?('())'))
+  end
+
+  def test_stuck
+    dpda = DPDA.new(PDAConfiguration.new(1, Stack.new(['$'])), [1], @rulebook)
+
+    dpda.read_string('())')
+
+    assert(!dpda.accepting?)
+    assert(dpda.stuck?)
   end
 end
