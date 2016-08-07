@@ -101,3 +101,24 @@ class TestDpda < Test::Unit::TestCase
     assert(dpda.stuck?)
   end
 end
+
+class TestEqualNumberCharacters < Test::Unit::TestCase
+  def test_equal_num_chars
+    rulebook = DPDARulebook.new([
+      PDARule.new(1, 'a', 2, '$', ['a', '$']),
+      PDARule.new(1, 'b', 2, '$', ['b', '$']),
+      PDARule.new(2, 'a', 2, 'a', ['a', 'a']),
+      PDARule.new(2, 'b', 2, 'b', ['b', 'b']),
+      PDARule.new(2, 'a', 2, 'b', []),
+      PDARule.new(2, 'b', 2, 'a', []),
+      PDARule.new(2, nil, 1, '$', ['$'])
+    ])
+
+    dpda_design = DPDADesign.new(1, '$', [1], rulebook)
+
+    assert(dpda_design.accepts?('ababab'))
+    assert(dpda_design.accepts?('bbbaaaab'))
+    assert(!dpda_design.accepts?('baa'))
+  end
+
+end
