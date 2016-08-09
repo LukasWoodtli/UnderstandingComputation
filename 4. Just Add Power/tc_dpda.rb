@@ -1,5 +1,5 @@
 require "test/unit"
-require_relative 'pda.rb'
+require_relative 'dpda.rb'
 
 class TestPda < Test::Unit::TestCase
   def test_stack
