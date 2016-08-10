@@ -16,7 +16,7 @@ class TestNpda < Test::Unit::TestCase
                                    PDARule.new(2, 'a', 2, 'a', []),
                                    PDARule.new(2, 'b', 2, 'b', []),
                                    PDARule.new(2, nil, 3, '$', ['$'])])
-                                  
+
   end
 
   def test_configuration
@@ -32,6 +32,15 @@ class TestNpda < Test::Unit::TestCase
     npda.read_character('a')
     assert(npda.accepting?)
 
+  end
+
+  def test_design
+    npda_design = NPDADesign.new(1, '$', [3], @rulebook)
+
+    assert(npda_design.accepts?('abba'))
+    assert(npda_design.accepts?('babbaabbab'))
+    assert(!npda_design.accepts?('abb'))
+    assert(!npda_design.accepts?('baabaa'))
   end
 
 end
