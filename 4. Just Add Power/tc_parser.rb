@@ -1,5 +1,6 @@
 require "test/unit"
 require_relative 'parser.rb'
+require_relative 'npda.rb'
 
 class TestParser < Test::Unit::TestCase
 
