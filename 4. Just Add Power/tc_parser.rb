@@ -53,7 +53,7 @@ class TestParser < Test::Unit::TestCase
     
     stop_rule = PDARule.new(2, nil, 3, '$',['$'])
     
-    rulebook = NPDARulebook.new([start_rule, stop_rule] + symbol_rules, token_rules)
+    rulebook = NPDARulebook.new([start_rule, stop_rule] + symbol_rules + token_rules)
     
     npda_design = NPDADesign.new(1, '$', [3], rulebook)
     
