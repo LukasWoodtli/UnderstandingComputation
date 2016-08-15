@@ -57,13 +57,13 @@ class TestParser < Test::Unit::TestCase
     
     npda_design = NPDADesign.new(1, '$', [3], rulebook)
     
-    token_string = LexicalAnalyzer.new("wile (x < 5) {x = x * 3}").analyze.join
+    token_string = LexicalAnalyzer.new("while (x < 5) {x = x * 3}").analyze.join
     
     assert_equal("w(v<n){v=v*n}", token_string)
     
     assert(npda_design.accepts?(token_string))
     
-    assert(npda_design.accepts?(LexicalAnalyzer.new("wile (x < 5 x = x * 3}").analyze.join ))
+    assert(npda_design.accepts?(LexicalAnalyzer.new("while (x < 5 x = x * 3}").analyze.join ))
   end
   
 end
