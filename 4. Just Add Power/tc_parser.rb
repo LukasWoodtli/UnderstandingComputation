@@ -63,7 +63,7 @@ class TestParser < Test::Unit::TestCase
     
     assert(npda_design.accepts?(token_string))
     
-    assert(npda_design.accepts?(LexicalAnalyzer.new("while (x < 5 x = x * 3}").analyze.join ))
+    assert(!npda_design.accepts?(LexicalAnalyzer.new("while (x < 5 x = x * 3}").analyze.join ))
   end
   
 end
