@@ -21,15 +21,23 @@ end
 
 
 class TestRule < Test::Unit::TestCase
+  
+  def setup
+    @rule = TMRule.new(1, '0', 2, '1', :right)
+  end
+
   def test_rule
-    rule = TMRule.new(1, '0', 2, '1', :right)
+    assert(@rule.applies_to?(TMConfiguration.new(1, Tape.new([], '0', [], '_'))))
 
-    assert(rule.applies_to?(TMConfiguration.new(1, Tape.new([], '0', [], '_'))))
+    assert(!@rule.applies_to?(TMConfiguration.new(1, Tape.new([], '1', [], '_'))))
 
-    assert(!rule.applies_to?(TMConfiguration.new(1, Tape.new([], '1', [], '_'))))
+    assert(!@rule.applies_to?(TMConfiguration.new(2, Tape.new([], '0', [], '_'))))
 
-    assert(!rule.applies_to?(TMConfiguration.new(2, Tape.new([], '0', [], '_'))))
+  end
 
+  def test_follow
+    assert_equal(TMConfiguration.new(2, Tape.new(['1'], '_', [], '_')),
+                 @rule.follow(TMConfiguration.new(1, Tape.new([], '0', [], '_'))))
   end
 
 end
