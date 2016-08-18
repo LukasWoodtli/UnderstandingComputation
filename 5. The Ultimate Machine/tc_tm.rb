@@ -19,3 +19,19 @@ class TestTm < Test::Unit::TestCase
   end
 end
 
+
+class TestRule < Test::Unit::TestCase
+  def test_rule
+    rule = TMRule.new(1, '0', 2, '1', :right)
+
+    assert(rule.applies_to?(TMConfiguration.new(1, Tape.new([], '0', [], '_'))))
+
+    assert(!rule.applies_to?(TMConfiguration.new(1, Tape.new([], '1', [], '_'))))
+
+    assert(!rule.applies_to?(TMConfiguration.new(2, Tape.new([], '0', [], '_'))))
+
+  end
+
+end
+
+

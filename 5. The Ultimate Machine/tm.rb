@@ -17,3 +17,17 @@ class Tape < Struct.new(:left, :middle, :right, :blank)
   end
 end
 
+
+class TMConfiguration < Struct.new(:state, :tape)
+end
+
+
+class TMRule < Struct.new(:state, :character, :next_state,
+                          :write_character, :direction)
+
+  def applies_to?(configuration)
+    state == configuration.state && character == configuration.tape.middle
+  end
+end
+
+
