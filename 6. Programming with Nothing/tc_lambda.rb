@@ -68,6 +68,11 @@ class TestLambda < Test::Unit::TestCase
     assert_equal(2, to_integer(MOD[POWER[THREE][THREE]][ADD[THREE][TWO]]))
   end
 
+  def test_mod_alt
+    assert_equal(1, to_integer(MOD_ALT[THREE][TWO]))
+    assert_equal(2, to_integer(MOD_ALT[POWER[THREE][THREE]][ADD[THREE][TWO]]))
+  end
+
   def test_list
     my_list = UNSHIFT[UNSHIFT[UNSHIFT[EMPTY][THREE]][TWO]][ONE]
 
@@ -82,6 +87,11 @@ class TestLambda < Test::Unit::TestCase
   def test_range
     my_range = RANGE[ONE][FIVE]
     assert_equal([1,2,3,4,5], to_array(my_range).map{ |p| to_integer(p)})
+  end
+
+  def test_range_alt
+  #  my_range = RANGE_ALT[ONE][FIVE]
+  #  assert_equal([1,2,3,4,5], to_array(my_range).map{ |p| to_integer(p)})
   end
 
   def test_fold
@@ -155,4 +165,10 @@ class TestLambda < Test::Unit::TestCase
     assert_equal([2, 4, 6, 8, 10, 12, 14, 16, 18, 20], to_array(MULTIPLES_OF[TWO], 10).map { |p| to_integer(p)})
     assert_equal([5, 10, 15, 20, 25, 30, 35, 40, 45, 50], to_array(MULTIPLES_OF[FIVE], 10).map { |p| to_integer(p)})
   end
+
+  def test_mltiply_streams
+    assert_equal([3, 12, 27, 48, 75, 108, 147, 192, 243, 300],
+                 to_array(MULTIPLY_STREAMS[UPWARDS_OF[ONE]][MULTIPLES_OF[THREE]], 10).map { |p| to_integer(p)})
+  end
+
 end

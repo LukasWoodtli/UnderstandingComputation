@@ -92,6 +92,12 @@ FIZZBUZZ = UNSHIFT[UNSHIFT[UNSHIFT[UNSHIFT[BUZZ][ZED]][ZED]][I]][F]
 ZEROS = Z[ -> f {UNSHIFT[f][ZERO]} ]
 UPWARDS_OF = Z[ -> f { -> n { UNSHIFT[ -> x {f[INCREMENT[n]][x]}][n]}}  ]
 MULTIPLES_OF = -> m { Z[ -> f { -> n { UNSHIFT[ -> x { f[ADD[m][n]][x]}][n]} }][m]}
+MULTIPLY_STREAMS = Z[ -> f { -> k { -> l { UNSHIFT[ -> x { f[REST[k]][REST[l]][x]}][MULTIPLY[FIRST[k]][FIRST[l]]] }}} ]
+
+# mod without recursion
+MOD_ALT = -> m { -> n { m[ -> x {IF[IS_LESS_OR_EQUAL[n][x]][SUBTRACT[x][n]][x] }][m]}} 
+COUNTDOWN =  -> p { PAIR[UNSHIFT[LEFT[p]][RIGHT[p]]][DECREMENT[RIGHT[p]]]}
+RANGE_ALT = -> m { -> n { LEFT[INCREMENT[SUBTRACT[n][m]][COUNTDOWN][PAIR[EMPTY][n]]] }}
 
 def to_integer(proc)
   proc[->n {n + 1}][0]
