@@ -134,4 +134,25 @@ class TestLambda < Test::Unit::TestCase
         n.to_s
       end }
   end
+
+  def test_zeros
+    assert_equal(0, to_integer(FIRST[ZEROS]))
+    assert_equal(0, to_integer(FIRST[REST[ZEROS]]))
+    assert_equal(0, to_integer(FIRST[REST[REST[REST[REST[REST[ZEROS]]]]]]))
+
+    assert_equal([0], to_array(ZEROS, 1).map { |p| to_integer(p)})
+    assert_equal([0, 0, 0, 0, 0], to_array(ZEROS, 5).map { |p| to_integer(p)})
+    assert_equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0], to_array(ZEROS, 10).map { |p| to_integer(p)})
+  end
+
+  def test_upwards
+    assert_equal([0, 1, 2, 3, 4], to_array(UPWARDS_OF[ZERO], 5).map { |p| to_integer(p)})
+    assert_equal([15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34], 
+                 to_array(UPWARDS_OF[FIFTEEN], 20).map { |p| to_integer(p)})
+  end
+
+  def test_multiples_of
+    assert_equal([2, 4, 6, 8, 10, 12, 14, 16, 18, 20], to_array(MULTIPLES_OF[TWO], 10).map { |p| to_integer(p)})
+    assert_equal([5, 10, 15, 20, 25, 30, 35, 40, 45, 50], to_array(MULTIPLES_OF[FIVE], 10).map { |p| to_integer(p)})
+  end
 end

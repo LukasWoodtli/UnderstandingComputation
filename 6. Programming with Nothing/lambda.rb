@@ -86,6 +86,13 @@ FIZZ = UNSHIFT[UNSHIFT[UNSHIFT[UNSHIFT[EMPTY][ZED]][ZED]][I]][F]
 BUZZ = UNSHIFT[UNSHIFT[UNSHIFT[UNSHIFT[EMPTY][ZED]][ZED]][U]][B]
 FIZZBUZZ = UNSHIFT[UNSHIFT[UNSHIFT[UNSHIFT[BUZZ][ZED]][ZED]][I]][F]
 
+### Advanced programming rechniques
+
+# infinite streams
+ZEROS = Z[ -> f {UNSHIFT[f][ZERO]} ]
+UPWARDS_OF = Z[ -> f { -> n { UNSHIFT[ -> x {f[INCREMENT[n]][x]}][n]}}  ]
+MULTIPLES_OF = -> m { Z[ -> f { -> n { UNSHIFT[ -> x { f[ADD[m][n]][x]}][n]} }][m]}
+
 def to_integer(proc)
   proc[->n {n + 1}][0]
 end
@@ -94,12 +101,13 @@ def to_boolean(proc)
   IF[proc][true][false]
 end
 
-def to_array(proc)
+def to_array(proc, count = nil)
   array = []
 
-  until to_boolean(IS_EMPTY[proc])
+  until to_boolean(IS_EMPTY[proc]) || count == 0
     array.push(FIRST[proc])
     proc = REST[proc]
+    count = count - 1 unless count.nil?
   end
 
   array
