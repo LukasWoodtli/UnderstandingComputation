@@ -29,7 +29,7 @@ class TestParser < Test::Unit::TestCase
                  @add.to_s)
   end
 
-  def test_replace
+  def test_replace_expressions
     expression = LCVariable.new(:x)
 
     test = expression.replace(:x, LCFunction.new(:y, LCVariable.new(:y)))
@@ -37,5 +37,29 @@ class TestParser < Test::Unit::TestCase
 
     test = expression.replace(:z, LCFunction.new(:y, LCVariable.new(:y)))
     assert_equal("x", test.to_s)
+
+    expression = LCCall.new(LCCall.new(LCCall.new(
+                                        LCVariable.new(:a),
+                                        LCVariable.new(:b)),
+                                       LCVariable.new(:c)),
+                            LCVariable.new(:b))
+
+    test = expression.replace(:a, LCVariable.new(:x))
+    assert_equal("x[b][c][b]", test.to_s)
+
+    test = expression.replace(:b, LCFunction.new(:x, LCVariable.new(:x)))
+    assert_equal("a[-> x { x }][c][-> x { x }]", test.to_s)
+  end
+
+  def test_replace_functions
+    expression = LCFunction.new(:y, LCCall.new(LCVariable.new(:x),
+                                               LCVariable.new(:y)))
+
+    test = expression.replace(:x, LCVariable.new(:z))
+    assert_equal("-> y { z[y] }", test.to_s)
+
+    test = expression.replace(:y, LCVariable.new(:z))
+    assert_equal("-> y { x[y] }", test.to_s)
+                                
   end
 end
