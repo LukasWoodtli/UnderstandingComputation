@@ -61,6 +61,19 @@ class TestParser < Test::Unit::TestCase
 
     test = expression.replace(:y, LCVariable.new(:z))
     assert_equal("-> y { x[y] }", test.to_s)
-                                
+
+  end
+
+  def test_replace_functions_with_scope
+    expression = LCCall.new(LCCall.new(LCVariable.new(:x),
+                                       LCVariable.new(:y)),
+                            LCFunction.new(:y, LCCall.new(LCVariable.new(:y),
+                                                          LCVariable.new(:x))))
+    assert_equal("x[y][-> y { y[x] }]", expression.to_s)
+    test = expression.replace(:x, LCVariable.new(:z))
+    assert_equal("z[y][-> y { y[z] }]", test.to_s)
+
+    test = expression.replace(:y, LCVariable.new(:z))
+    assert_equal("x[z][-> y { y[x] }]", test.to_s)
   end
 end
