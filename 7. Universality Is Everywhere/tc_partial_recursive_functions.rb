@@ -99,4 +99,23 @@ class TestLambdaPartialRecursiveFunctions < Test::Unit::TestCase
 
     assert_equal(0, subtract(two, six))
   end
+
+  # implement divide
+
+  def divide(x, y)
+    minimize { |n| subtract(increment(x), multiply(y, increment(n))) }
+  end
+
+  def ten
+    increment(multiply(three, three))
+  end
+
+  def test_divide
+    assert_equal(3, divide(six, two))
+
+    assert_equal(3, divide(ten, three))
+
+    # this loops forever (stack level too deep)
+    # divide(six, zero)
+  end
 end
