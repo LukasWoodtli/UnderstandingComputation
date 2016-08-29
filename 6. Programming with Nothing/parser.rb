@@ -33,6 +33,10 @@ class LCFunction < Struct.new(:parameter, :body)
       LCFunction.new(parameter, body.replace(name, replacement))
     end
   end
+
+  def call(argument)
+    body.replace(parameter, argument)
+  end
 end
 
 class LCCall < Struct.new(:left, :right)

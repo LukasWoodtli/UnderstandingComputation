@@ -75,4 +75,39 @@ class TestParser < Test::Unit::TestCase
     test = expression.replace(:y, LCVariable.new(:z))
     assert_equal("x[z][-> y { y[x] }]", test.to_s)
   end
+
+  def test_replace_not_working
+    expression = LCFunction.new(:x,
+                               LCCall.new(LCVariable.new(:x),
+                                          LCVariable.new(:y)))
+
+    assert_equal("-> x { x[y] }", expression.to_s)
+
+    replacement = LCCall.new(LCVariable.new(:z),
+                             LCVariable.new(:x))
+
+    assert_equal("z[x]", replacement.to_s)
+    
+    test = expression.replace(:y, replacement)
+    
+    # this replacement is wrong: we plug in a z[x] but x is a captured
+    # variable in the expression but in z[x] x is a free variable
+    # and should remain free after the replacement
+    # see book p. 224f
+    # assert_equal("-> x { x[z[x]] }", test.to_s)
+  end
+
+  def test_function_call
+    function = LCFunction.new(:x,  LCFunction.new(:y,
+                                        LCCall.new(LCVariable.new(:x),
+                                                   LCVariable.new(:y))))
+    assert_equal("-> x { -> y { x[y] } }", function.to_s)
+
+    argument = LCFunction.new(:z, LCVariable.new(:z))
+    assert_equal("-> z { z }", argument.to_s)
+
+    test = function.call(argument)
+    assert_equal("-> y { -> z { z }[y] }", test.to_s)
+  end
+
 end
