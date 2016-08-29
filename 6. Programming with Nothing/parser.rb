@@ -7,6 +7,10 @@ class LCVariable < Struct.new(:name)
   def inspect
     to_s
   end
+  
+  def to_lambda_calc_s
+    to_s
+  end
 
   def replace(name, replacement)
     if self.name == name
@@ -25,6 +29,10 @@ class LCFunction < Struct.new(:parameter, :body)
   def inspect
     to_s
   end
+  
+  def to_lambda_calc_s
+    "λ" + parameter.to_lambda_calc_s + "." + body.to_lambda_calc_s
+  end
 
   def replace(name, replacement)
     if parameter == name
@@ -42,6 +50,10 @@ class LCCall < Struct.new(:left, :right)
 
   def inspect
     to_s
+  end
+  
+  def to_lambda_calc_s
+    "(" + left.to_lambda_calc_s + right.to_lambda_calc_s ")"
   end
 
   def replace(name, replacement)

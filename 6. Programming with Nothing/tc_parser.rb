@@ -22,6 +22,7 @@ class TestParser < Test::Unit::TestCase
 
   def test_expressions
     assert_equal("-> p { -> x { p[x] } }", @one.to_s)
+    assert_equal("λp.λx.(px)", @one.to_lambda_calc_s)
 
     assert_equal("-> n { -> p { -> x { p[n[p][x]] } } }", @increment.to_s)
 
