@@ -1,4 +1,5 @@
 require "test/unit"
+require "treetop"
 require_relative 'parser.rb'
 
 class TestParser < Test::Unit::TestCase
@@ -87,9 +88,9 @@ class TestParser < Test::Unit::TestCase
                              LCVariable.new(:x))
 
     assert_equal("z[x]", replacement.to_s)
-    
+
     test = expression.replace(:y, replacement)
-    
+
     # this replacement is wrong: we plug in a z[x] but x is a captured
     # variable in the expression but in z[x] x is a free variable
     # and should remain free after the replacement
@@ -114,7 +115,7 @@ class TestParser < Test::Unit::TestCase
     expression = LCCall.new(LCCall.new(@add, @one), @one)
     assert_equal("-> m { -> n { n[-> n { -> p { -> x { p[n[p][x]] } } }][m] } }[-> p { -> x { p[x] } }][-> p { -> x { p[x] } }]",
                 expression.to_s)
-  
+
 
     # check if it behaves like incrementing zero twice
     inc = LCVariable.new(:inc)
@@ -127,6 +128,18 @@ class TestParser < Test::Unit::TestCase
     end
     assert_equal("inc[inc[zero]]",
                  expression.to_s)
+  end
+
+  def test_parser
+    Treetop.load('lambda_calculus')
+
+    parse_tree = LambdaCalculusParser.new.parse('-> x { x[x] }[-> y { y }]')
+
+    expression = parse_tree.to_ast
+    assert_equal("-> x { x[x] }[-> y { y }]", expression.to_s)
+
+    test = expression.reduce
+    assert_equal("-> y { y }[-> y { y }]", test.to_s)
   end
 
 end
