@@ -110,4 +110,23 @@ class TestParser < Test::Unit::TestCase
     assert_equal("-> y { -> z { z }[y] }", test.to_s)
   end
 
+  def test_reduce
+    expression = LCCall.new(LCCall.new(@add, @one), @one)
+    assert_equal("-> m { -> n { n[-> n { -> p { -> x { p[n[p][x]] } } }][m] } }[-> p { -> x { p[x] } }][-> p { -> x { p[x] } }]",
+                expression.to_s)
+  
+
+    # check if it behaves like incrementing zero twice
+    inc = LCVariable.new(:inc)
+    zero = LCVariable.new(:zero)
+
+    expression = LCCall.new(LCCall.new(expression, inc), zero)
+
+    while expression.reducible?
+      expression = expression.reduce
+    end
+    assert_equal("inc[inc[zero]]",
+                 expression.to_s)
+  end
+
 end
