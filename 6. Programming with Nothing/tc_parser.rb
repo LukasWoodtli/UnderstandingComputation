@@ -131,7 +131,9 @@ class TestParser < Test::Unit::TestCase
   end
 
   def test_parser
-    Treetop.load('lambda_calculus')
+
+    this_dir = File.expand_path(File.dirname(__FILE__))
+    Treetop.load(File.join(this_dir, 'lambda_calculus'))
 
     parse_tree = LambdaCalculusParser.new.parse('-> x { x[x] }[-> y { y }]')
 
