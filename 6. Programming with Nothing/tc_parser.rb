@@ -1,4 +1,5 @@
 require "test/unit"
+require "treetop"
 require_relative 'parser.rb'
 
 class TestParser < Test::Unit::TestCase
@@ -76,4 +77,72 @@ class TestParser < Test::Unit::TestCase
     test = expression.replace(:y, LCVariable.new(:z))
     assert_equal("x[z][-> y { y[x] }]", test.to_s)
   end
+
+  def test_replace_not_working
+    expression = LCFunction.new(:x,
+                               LCCall.new(LCVariable.new(:x),
+                                          LCVariable.new(:y)))
+
+    assert_equal("-> x { x[y] }", expression.to_s)
+
+    replacement = LCCall.new(LCVariable.new(:z),
+                             LCVariable.new(:x))
+
+    assert_equal("z[x]", replacement.to_s)
+
+    test = expression.replace(:y, replacement)
+
+    # this replacement is wrong: we plug in a z[x] but x is a captured
+    # variable in the expression but in z[x] x is a free variable
+    # and should remain free after the replacement
+    # see book p. 224f
+    # assert_equal("-> x { x[z[x]] }", test.to_s)
+  end
+
+  def test_function_call
+    function = LCFunction.new(:x,  LCFunction.new(:y,
+                                        LCCall.new(LCVariable.new(:x),
+                                                   LCVariable.new(:y))))
+    assert_equal("-> x { -> y { x[y] } }", function.to_s)
+
+    argument = LCFunction.new(:z, LCVariable.new(:z))
+    assert_equal("-> z { z }", argument.to_s)
+
+    test = function.call(argument)
+    assert_equal("-> y { -> z { z }[y] }", test.to_s)
+  end
+
+  def test_reduce
+    expression = LCCall.new(LCCall.new(@add, @one), @one)
+    assert_equal("-> m { -> n { n[-> n { -> p { -> x { p[n[p][x]] } } }][m] } }[-> p { -> x { p[x] } }][-> p { -> x { p[x] } }]",
+                expression.to_s)
+
+
+    # check if it behaves like incrementing zero twice
+    inc = LCVariable.new(:inc)
+    zero = LCVariable.new(:zero)
+
+    expression = LCCall.new(LCCall.new(expression, inc), zero)
+
+    while expression.reducible?
+      expression = expression.reduce
+    end
+    assert_equal("inc[inc[zero]]",
+                 expression.to_s)
+  end
+
+  def test_parser
+
+    this_dir = File.expand_path(File.dirname(__FILE__))
+    Treetop.load(File.join(this_dir, 'lambda_calculus'))
+
+    parse_tree = LambdaCalculusParser.new.parse('-> x { x[x] }[-> y { y }]')
+
+    expression = parse_tree.to_ast
+    assert_equal("-> x { x[x] }[-> y { y }]", expression.to_s)
+
+    test = expression.reduce
+    assert_equal("-> y { y }[-> y { y }]", test.to_s)
+  end
+
 end
