@@ -40,7 +40,7 @@ class TestSKI < Test::Unit::TestCase
     test = combinator.call(*arguments)
     assert_equal("x[z][y[z]]", test.to_s)
 
-    
+
     expression = SKICall.new(SKICall.new(x, y), z)
 
     combinator = expression.combinator
@@ -56,11 +56,35 @@ class TestSKI < Test::Unit::TestCase
 
     combinator = expression.combinator
     assert_equal("S", combinator.to_s)
-                 
+
     arguments = expression.arguments
     assert_equal([x, y], arguments)
 
     # this is not working (see book)
-    # combinator.call(*arguments)    
+    # combinator.call(*arguments)
+
+    expression = SKICall.new(SKICall.new(x, y), z)
+    assert(!expression.combinator.callable?(*expression.arguments))
+
+    expression = SKICall.new(SKICall.new(S, x), y)
+    assert(!expression.combinator.callable?(*expression.arguments))
+
+    expression = SKICall.new(SKICall.new(SKICall.new(S, x), y), z)
+    assert(expression.combinator.callable?(*expression.arguments))
+  end
+
+  def test_reduce
+    x = SKISymbol.new(:x)
+    y = SKISymbol.new(:y)
+
+    swap = SKICall.new(SKICall.new(S, SKICall.new(K, SKICall.new(S, I))), K)
+    assert_equal("S[K[S[I]]][K]", swap.to_s)
+
+    expression = SKICall.new(SKICall.new(swap, x), y)
+    while expression.reducible?
+      expression = expression.reduce
+    end
+
+    assert_equal("y[x]", expression.to_s)
   end
 end
