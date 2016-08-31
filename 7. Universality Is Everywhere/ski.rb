@@ -15,6 +15,10 @@ class SKISymbol < Struct.new(:name)
   def arguments
     []
   end
+
+  def callable?(*arguments)
+    false
+  end
 end
 
 class SKICall < Struct.new(:left, :right)
@@ -45,12 +49,25 @@ def S.call(a, b, c)
   SKICall.new(SKICall.new(a, c), SKICall.new(b, c))
 end
 
+def S.callable?(*arguments)
+  arguments.length == 3
+end
+
 # reduce K[a][b] to a
 def K.call(a, b)
   a
 end
 
+def K.callable?(*arguments)
+  arguments.length == 2
+end
+
+
 # reduce I[a] to a
 def I.call(a)
   a
+end
+
+def I.callable?(*arguments)
+  arguments.length == 1
 end

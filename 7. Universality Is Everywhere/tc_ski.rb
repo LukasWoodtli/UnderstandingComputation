@@ -39,5 +39,28 @@ class TestSKI < Test::Unit::TestCase
 
     test = combinator.call(*arguments)
     assert_equal("x[z][y[z]]", test.to_s)
+
+    
+    expression = SKICall.new(SKICall.new(x, y), z)
+
+    combinator = expression.combinator
+    assert_equal("x", combinator.to_s)
+
+    arguments = expression.arguments
+    assert_equal([y, z], arguments)
+
+    # this is not working (see book)
+    # combinator.call(*arguments)
+
+    expression = SKICall.new(SKICall.new(S, x), y)
+
+    combinator = expression.combinator
+    assert_equal("S", combinator.to_s)
+                 
+    arguments = expression.arguments
+    assert_equal([x, y], arguments)
+
+    # this is not working (see book)
+    # combinator.call(*arguments)    
   end
 end
