@@ -7,6 +7,14 @@ class SKISymbol < Struct.new(:name)
   def inspect
     to_s
   end
+
+  def combinator
+    self
+  end
+
+  def arguments
+    []
+  end
 end
 
 class SKICall < Struct.new(:left, :right)
@@ -16,6 +24,14 @@ class SKICall < Struct.new(:left, :right)
 
   def inspect
     to_s
+  end
+
+  def combinator
+    left.combinator
+  end
+
+  def arguments
+    left.arguments + [right]
   end
 end
 
