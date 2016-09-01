@@ -1,3 +1,4 @@
+# coding: utf-8
 
 class SKISymbol < Struct.new(:name)
   def to_s
@@ -23,6 +24,14 @@ class SKISymbol < Struct.new(:name)
   def reducible?
     false
   end
+
+  def as_a_function_of(name)
+    if self.name == name
+      I
+    else
+      SKICall.new(K, self)
+    end
+  end
 end
 
 class SKICall < Struct.new(:left, :right)
@@ -34,7 +43,7 @@ class SKICall < Struct.new(:left, :right)
     to_s
   end
 
-  def combinator
+   def combinator
     left.combinator
   end
 
@@ -55,9 +64,19 @@ class SKICall < Struct.new(:left, :right)
       combinator.call(*arguments)
     end
   end
+
+  def as_a_function_of(name)
+    left_function = left.as_a_function_of(name)
+    right_function = right.as_a_function_of(name)
+    SKICall.new(SKICall.new(S, left_function), right_function)
+  end
 end
 
 class SKICombinator < SKISymbol
+
+  def as_a_function_of(name)
+    SKICall.new(K, self)
+  end
 end
 
 S, K, I = [:S, :K, :I].map { |name| SKICombinator.new(name) }
