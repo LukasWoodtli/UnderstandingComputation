@@ -106,5 +106,21 @@ class TestSKI < Test::Unit::TestCase
 
     assert_equal("S[K][I]", expression.to_s)
     assert(expression == original)
+
+
+    original = SKICall.new(SKICall.new(S, x), I)
+    function = original.as_a_function_of(:x)
+    assert_equal("S[S[K[S]][I]][K[I]]", function.to_s)
+
+    expression = SKICall.new(function, y)
+    assert_equal("S[S[K[S]][I]][K[I]][y]", expression.to_s)
+
+    while expression.reducible?
+      expression = expression.reduce
+    end
+
+    assert_equal("S[y][I]", expression.to_s)
+    assert(expression != original)
+    
   end
 end
