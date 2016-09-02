@@ -51,7 +51,7 @@ class TestTagSystems < Test::Unit::TestCase
   end
 
   def test_double_and_inc
-    rulebook = TagRulebook.new(2, [TagRule.new('a', 'cc'), 
+    rulebook = TagRulebook.new(2, [TagRule.new('a', 'cc'),
                                    TagRule.new('b', 'dddd'), # doubling
                                    TagRule.new('c', 'eeff'),
                                    TagRule.new('d', 'ff')])  # increment
@@ -61,4 +61,51 @@ class TestTagSystems < Test::Unit::TestCase
     test = system.run
     assert_equal('eeffffffffff', test)
   end
+
+  def test_even_odd
+
+    rulebook = TagRulebook.new(2, [TagRule.new('a', 'cc'),
+                                   TagRule.new('b', 'd'),
+                                   TagRule.new('c', 'eo'),
+                                   TagRule.new('d', ''),
+                                   TagRule.new('e', 'e')])
+
+    # even
+    system = TagSystem.new('aabbbbbbbb', rulebook)
+
+    test = system.run
+    assert_equal('e', test)
+
+    # odd
+    system = TagSystem.new('aabbbbbbbbbb', rulebook)
+
+    test = system.run
+    assert_equal('o', test)
+  end
+end
+
+
+class TestCyclicTagSystems < Test::Unit::TestCase
+  def test_cyclic_tag_system
+    rulebook = CyclicTagRulebook.new([CyclicTagRule.new('1'),
+                                      CyclicTagRule.new('0010'),
+                                      CyclicTagRule.new('10')])
+
+    system = TagSystem.new('11', rulebook)
+
+    16.times do
+      system.step
+    end
+
+    assert_equal('00101', system.current_string)
+
+
+    20.times do
+      system.step
+    end
+
+    assert_equal('101', system.current_string)
+  end
+
+
 end
