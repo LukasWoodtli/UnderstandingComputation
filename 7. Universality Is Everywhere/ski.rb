@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require_relative "../6. Programming with Nothing/parser.rb"
+
 class SKISymbol < Struct.new(:name)
   def to_s
     name.to_s
@@ -108,3 +110,23 @@ end
 def I.callable?(*arguments)
   arguments.length == 1
 end
+
+
+class LCVariable
+  def to_ski
+    SKISymbol.new(name)
+  end
+end
+
+class LCCall
+  def to_ski
+    SKICall.new(left.to_ski, right.to_ski)
+  end
+end
+
+class LCFunction
+  def to_ski
+    body.to_ski.as_a_function_of(parameter)
+  end
+end
+
