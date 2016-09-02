@@ -107,5 +107,34 @@ class TestCyclicTagSystems < Test::Unit::TestCase
     assert_equal('101', system.current_string)
   end
 
+  def test_alphabet_and_encoder
+    rulebook = TagRulebook.new(2, [TagRule.new('a', 'ccdd'),
+                                   TagRule.new('b', 'dd')])
 
+    system = TagSystem.new('aabbbb', rulebook)
+
+    assert_equal(['a', 'b', 'c', 'd'], system.alphabet)
+
+    encoder = system.encoder
+
+    assert_equal("0010", encoder.encode_character('c'))
+
+    assert_equal("001010000100", encoder.encode_string('cab'))
+
+    #rule = system.rulebook.rules.first
+  end
+
+  def test_to_cyclic
+    rulebook = TagRulebook.new(2, [TagRule.new('a', 'ccdd'),
+                                   TagRule.new('b', 'dd')])
+
+    system = TagSystem.new('aabbbb', rulebook)
+
+    cyclic_system = system.to_cyclic
+
+    test = cyclic_system.run
+
+    assert_equal("", test)
+
+  end
 end
