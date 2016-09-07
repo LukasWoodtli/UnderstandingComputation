@@ -1,5 +1,8 @@
+# coding: utf-8
 class Sign < Struct.new(:name)
   NEGATIVE, ZERO, POSITIVE = [:negative, :zero, :positive].map { |name| new(name) }
+
+  UNKNOWN = new(:unknown)
 
   def inspect
     "#<Sign #{name}>"
@@ -8,11 +11,29 @@ class Sign < Struct.new(:name)
   def *(other_sign)
     if [self, other_sign].include?(ZERO)
       ZERO
+    elsif [self, other_sign].include?(UNKNOWN)
+      UNKNOWN
     elsif self == other_sign
       POSITIVE
     else
       NEGATIVE
     end
+  end
+
+  def +(other_sign)
+    if self == other_sign || other_sign == ZERO
+      self
+    elsif self == ZERO
+      other_sign
+    else
+      UNKNOWN
+    end
+  end
+
+  # Since what we’re testing is whether one Sign value “fits inside” another, 
+  # let’s make it the #<= method:
+  def <=(other_sign)
+    self == other_sign || other_sign == UNKNOWN
   end
 end
 
@@ -29,3 +50,12 @@ class Numeric
   end
 end
 
+
+def calculate(x, y, z)
+  (x * y) * (x * z)
+end
+
+
+def sum_of_squares(x, y)
+  (x * x) + (y * y)
+end
