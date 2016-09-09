@@ -32,4 +32,26 @@ class TestTypes < Test::Unit::TestCase
                                Variable.new(:x), DoNothing.new).type({ x: Type::NUMBER}))
 
   end
+
+  def test_while
+    statement = While.new(LessThan.new(Variable.new(:x),
+                                       Number.new(5)),
+                          Assign.new(:x, Add.new(Variable.new(:x),
+                                                 Number.new(3))))
+
+    assert_equal(nil, statement.type({}))
+    assert_equal(Type::VOID, statement.type({ x: Type::NUMBER }))
+    assert_equal(nil, statement.type({ x: Type::BOOLEAN }))
+
+  end
+
+  def test_endless_loop
+    statement = Sequence.new(Assign.new(:x, Number.new(0)),
+                             While.new(Boolean.new(true),
+                                       Assign.new(:x,
+                                                  Add.new(Variable.new(:x),
+                                                              Number.new(1)))))
+
+    assert_equal(Type::VOID, statement.type({ x: Type::NUMBER }))
+  end
 end
