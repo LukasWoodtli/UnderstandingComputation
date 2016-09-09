@@ -51,7 +51,7 @@ class TestTypes < Test::Unit::TestCase
                                        Assign.new(:x,
                                                   Add.new(Variable.new(:x),
                                                               Number.new(1)))))
-
+    assert_equal("x = 0; while (true) { x = x + 1 }", statement.to_s)
     assert_equal(Type::VOID, statement.type({ x: Type::NUMBER }))
   end
 end

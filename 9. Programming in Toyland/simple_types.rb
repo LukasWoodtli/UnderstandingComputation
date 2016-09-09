@@ -62,7 +62,6 @@ class If
     if condition.type(context) == Type::BOOLEAN &&
        consequence.type(context) == Type::VOID &&
        alternative.type(context) == Type::VOID
-
       Type::VOID
     end
   end
@@ -72,7 +71,6 @@ class While
   def type(context)
     if condition.type(context) == Type::BOOLEAN &&
        body.type(context) == Type::VOID
-
       Type::VOID
     end
   end
