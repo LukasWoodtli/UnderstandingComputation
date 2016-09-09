@@ -17,7 +17,7 @@ end
 
 class Boolean
   def type(context)
-    Type::Boolean
+    Type::BOOLEAN
   end
 end
 
