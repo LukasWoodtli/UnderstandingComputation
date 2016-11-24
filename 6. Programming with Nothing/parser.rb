@@ -1,3 +1,4 @@
+# coding: utf-8
 
 class LCVariable < Struct.new(:name)
   def to_s
@@ -39,7 +40,8 @@ class LCFunction < Struct.new(:parameter, :body)
   end
   
   def to_lambda_calc_s
-    "λ" + parameter.to_lambda_calc_s + "." + body.to_lambda_calc_s
+    # older ruby versions (1.9) can't handle unicode "λ"
+    "\\" + parameter.to_lambda_calc_s + "." + body.to_lambda_calc_s
   end
 
   def replace(name, replacement)
