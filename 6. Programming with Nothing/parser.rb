@@ -73,7 +73,7 @@ class LCCall < Struct.new(:left, :right)
   end
   
   def to_lambda_calc_s
-    "(" + left.to_lambda_calc_s + right.to_lambda_calc_s ")"
+    "(" + left.to_lambda_calc_s + right.to_lambda_calc_s + ")"
   end
 
   def replace(name, replacement)
